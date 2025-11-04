@@ -313,7 +313,7 @@ class OceanMusicPlayer {
     if (this.playlist.length === 0) {
       container.innerHTML = `
         <div class="empty-playlist">
-          <div class="empty-icon">🌊</div>
+          <div class="empty-icon"></div>
           <p>Votre océan musical est vide</p>
           <p class="empty-subtitle">Importez vos fichiers audio pour commencer</p>
         </div>
