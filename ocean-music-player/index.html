@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Lecteur audio moderne avec thème océan - Interface immersive avec animations aquatiques">
+    <meta name="theme-color" content="#001122">
+    <title>🌊 Ocean Music Player</title>
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="script.js" as="script">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
+</head>
+<body>
+    <!-- Animated Ocean Background -->
+    <div class="ocean-background">
+        <div class="wave wave1"></div>
+        <div class="wave wave2"></div>
+        <div class="wave wave3"></div>
+        <div class="wave wave4"></div>
+    </div>
+
+    <!-- Underwater Particles -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen" aria-hidden="true">
+        <div class="loading-animation">
+            <div class="ocean-loader">
+                <div class="loader-wave"></div>
+            </div>
+            <p>Chargement du lecteur océanique...</p>
+        </div>
+    </div>
+
+    <!-- File Import Zone (Hidden by default) -->
+    <div id="dropZone" class="drop-zone" style="display: none;">
+        <div class="drop-zone-content">
+            <div class="drop-icon">🎵</div>
+            <h3>Déposez vos fichiers audio ici</h3>
+            <p>Ou cliquez pour sélectionner des fichiers</p>
+            <input type="file" id="fileInput" multiple accept="audio/*" style="display: none;">
+        </div>
+    </div>
+
+    <main class="player" role="main">
+        <header class="player-header">
+            <h1>🌊 Ocean Music Player</h1>
+            <div class="player-status" aria-live="polite" id="statusDisplay">Prêt à naviguer dans vos mélodies</div>
+        </header>
+
+        <section class="stage" aria-label="Lecteur principal">
+            <!-- Audio Visualizer Canvas -->
+            <canvas id="visualizer" class="visualizer" aria-hidden="true"></canvas>
+            
+            <div class="disc-container">
+                <div class="disc-wrap">
+                    <div class="disc" id="disc" role="img" aria-label="Pochette d'album">
+                        <div class="disc-inner">
+                            <div class="disc-center"></div>
+                            <img id="coverImg" class="cover-image" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23001122'/><text x='150' y='160' text-anchor='middle' fill='%2300CCDD' font-size='60'>🌊</text></svg>" alt="Pochette d'album">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Track Information -->
+                <div class="track-info">
+                    <h2 id="trackTitle" class="track-title">Aucune piste sélectionnée</h2>
+                    <p id="trackArtist" class="track-artist">Importez votre musique</p>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="time-display">
+                    <span id="currentTime">0:00</span>
+                    <span id="duration">0:00</span>
+                </div>
+                <div class="progress-track">
+                    <input type="range" id="progress" class="progress-slider" min="0" max="100" value="0" aria-label="Position de lecture">
+                    <div class="progress-fill"></div>
+                </div>
+            </div>
+
+            <!-- Control Buttons -->
+            <div class="controls">
+                <button id="shuffleBtn" class="control-btn shuffle-btn" aria-label="Lecture aléatoire" title="Aléatoire">
+                    <span>🔀</span>
+                </button>
+                
+                <button id="prevBtn" class="control-btn prev-btn" aria-label="Piste précédente" title="Précédent">
+                    <span>⏮️</span>
+                </button>
+                
+                <button id="playBtn" class="control-btn play-btn" aria-label="Lecture/Pause" title="Play/Pause">
+                    <span id="playIcon">▶️</span>
+                    <span id="pauseIcon" style="display: none;">⏸️</span>
+                </button>
+                
+                <button id="nextBtn" class="control-btn next-btn" aria-label="Piste suivante" title="Suivant">
+                    <span>⏭️</span>
+                </button>
+                
+                <button id="repeatBtn" class="control-btn repeat-btn" aria-label="Répéter" title="Répéter">
+                    <span>🔁</span>
+                </button>
+            </div>
+
+            <!-- Volume Control -->
+            <div class="volume-control">
+                <button id="muteBtn" class="control-btn mute-btn" aria-label="Muet" title="Muet/Son">
+                    <span id="volumeIcon">🔊</span>
+                </button>
+                <div class="volume-slider-container">
+                    <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="50" aria-label="Volume">
+                </div>
+            </div>
+        </section>
+
+        <!-- Import Controls -->
+        <section class="import-controls">
+            <button id="importBtn" class="import-btn" title="Importer de la musique">
+                📁 Importer Musique
+            </button>
+            <button id="clearBtn" class="clear-btn" title="Vider la playlist">
+                🗑️ Vider
+            </button>
+        </section>
+
+        <!-- Playlist -->
+        <section class="playlist-section" aria-label="Liste de lecture">
+            <header class="playlist-header">
+                <h3>🎵 Playlist</h3>
+                <div id="playlistStats" class="playlist-stats">0 pistes</div>
+            </header>
+            <div id="playlist" class="playlist" role="list">
+                <div class="empty-playlist">
+                    <div class="empty-icon">🌊</div>
+                    <p>Votre océan musical est vide</p>
+                    <p class="empty-subtitle">Importez vos fichiers audio pour commencer</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Audio Element -->
+    <audio id="audio" preload="metadata" crossorigin="anonymous"></audio>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
