@@ -1,0 +1,54 @@
+/* Base styling for the scene */
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background: radial-gradient(circle at center, #87CEEB, #4682B4); /* Background like a stage */
+}
+
+.scene {
+    position: relative;
+}
+
+.miku {
+    position: relative;
+    bottom: 0;
+    width: 300px;
+    animation: dance 3s infinite ease-in-out;
+}
+
+.music-toggle {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    background-color: #ff69b4;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Keyframes for the dance animation */
+@keyframes dance {
+    0% {
+        transform: translateY(0) rotate(0);
+    }
+    25% {
+        transform: translateY(-20px) rotate(-10deg);
+    }
+    50% {
+        transform: translateY(0) rotate(0);
+    }
+    75% {
+        transform: translateY(-20px) rotate(10deg);
+    }
+    100% {
+        transform: translateY(0) rotate(0);
+    }
+}

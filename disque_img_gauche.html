@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecteur CD</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #222;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Conteneur principal */
+        .player-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        /* Bloc fixe du CD */
+        .cd-box {
+            width: 160px;
+            height: 160px;
+            background: #444;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* CD fixe */
+        .cd {
+            position: absolute;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, #555 10%, #000 40%, #333 70%);
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+
+        .cd::before {
+            content: "";
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Image qui glisse en partie vers la gauche */
+        .album-cover {
+            position: absolute;
+            width: 100px;
+            height: 140px;
+            background: url('https://addons-media.operacdn.com/media/CACHE/images/themes/15/36815/1.0-rev1/images/b4f5f2c1-dfcf-4904-b16d-08dea9d05be0/ab19d01f571e1d171215ce88928daecc.jpg') no-repeat center/cover;
+            border-radius: 10px;
+            left: -110px; /* Cachée au départ */
+            transition: left 0.3s ease-in-out;
+        }
+
+        .cd-box:hover .album-cover {
+            left: -50px; /* Sort en partie vers la gauche */
+        }
+
+        /* Panneau musique */
+        .music-panel {
+            position: absolute;
+            width: 300px;
+            height: 120px;
+            background: #333;
+            border-radius: 10px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            right: 170px;
+            opacity: 0;
+            transform: translateX(20px);
+            transition: transform 0.5s ease-out, opacity 0.3s ease-in-out;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .music-panel img {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            margin-right: 15px;
+        }
+
+        .music-info {
+            flex-grow: 1;
+            color: white;
+        }
+
+        .music-info h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .controls button {
+            background: #ff4d4d;
+            border: none;
+            padding: 8px 12px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .progress-bar {
+            flex-grow: 1;
+            height: 5px;
+            background: #777;
+            border-radius: 5px;
+            margin-left: 10px;
+            position: relative;
+        }
+
+        .progress {
+            width: 50%;
+            height: 5px;
+            background: #ff4d4d;
+            border-radius: 5px;
+        }
+
+        /* Classe pour afficher le panneau */
+        .show {
+            opacity: 1 !important;
+            transform: translateX(0) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="player-container" x-data="{ showPanel: false, isPlaying: false }">
+        <!-- Bloc principal -->
+        <div class="cd-box" @click="showPanel = !showPanel">
+            <div class="cd"></div>
+            <div class="album-cover"></div>
+        </div>
+
+        <!-- Panneau de musique -->
+        <div class="music-panel" :class="showPanel ? 'show' : ''">
+            <img src="https://via.placeholder.com/80" alt="Album">
+            <div class="music-info">
+                <h3>Nom de la musique</h3>
+                <div class="controls">
+                    <button @click="isPlaying = !isPlaying" x-text="isPlaying ? 'Pause' : 'Play'"></button>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

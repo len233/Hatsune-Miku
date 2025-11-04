@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation CD</title>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #222;
+        }
+
+        .cd-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            background: #444;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .cd {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, #aaa, #666);
+            border-radius: 50%;
+            top: 15px;
+            left: 15px;
+            transition: transform 0.5s ease-out;
+        }
+
+        .cd-container:hover .cd {
+            transform: translateX(100px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cd-container">
+        <div class="cd"></div>
+    </div>
+
+</body>
+</html>
