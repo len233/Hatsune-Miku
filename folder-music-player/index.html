@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Lecteur de musique moderne avec scan de dossiers - Interface élégante pour votre bibliothèque musicale">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>🎵 Folder Music Player</title>
+    
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎵</text></svg>">
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="background-animation">
+        <div class="floating-note note1">♪</div>
+        <div class="floating-note note2">♫</div>
+        <div class="floating-note note3">♪</div>
+        <div class="floating-note note4">♫</div>
+        <div class="floating-note note5">♪</div>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="music-loader">
+                <div class="loader-bar"></div>
+                <div class="loader-bar"></div>
+                <div class="loader-bar"></div>
+                <div class="loader-bar"></div>
+                <div class="loader-bar"></div>
+            </div>
+            <p>Initialisation du lecteur...</p>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><span class="icon">🎵</span> Folder Music Player</h1>
+                <p class="subtitle">Votre bibliothèque musicale personnelle</p>
+            </div>
+            <div class="header-controls">
+                <button id="folderBtn" class="folder-btn" title="Sélectionner un dossier">
+                    <span class="icon">📁</span>
+                    <span class="text">Choisir Dossier</span>
+                </button>
+                <input type="file" id="folderInput" webkitdirectory directory multiple style="display: none;">
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Left Panel - Folder Browser -->
+            <aside class="left-panel">
+                <div class="panel-header">
+                    <h3><span class="icon">📂</span> Explorateur</h3>
+                    <div class="folder-info" id="folderInfo">Aucun dossier sélectionné</div>
+                </div>
+                
+                <div class="folder-tree" id="folderTree">
+                    <div class="empty-state">
+                        <div class="empty-icon">📁</div>
+                        <p>Sélectionnez un dossier pour commencer</p>
+                        <button class="select-folder-btn" onclick="document.getElementById('folderInput').click()">
+                            Choisir un dossier
+                        </button>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center Panel - Player -->
+            <section class="center-panel">
+                <!-- Now Playing -->
+                <div class="now-playing">
+                    <div class="album-art">
+                        <div class="vinyl-disc" id="vinylDisc">
+                            <div class="vinyl-center"></div>
+                            <img id="albumCover" src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><rect width='200' height='200' fill='%23333'/><text x='100' y='110' text-anchor='middle' fill='%23fff' font-size='60'>🎵</text></svg>" alt="Album Cover">
+                        </div>
+                    </div>
+                    
+                    <div class="track-info">
+                        <h2 id="trackTitle">Aucune piste sélectionnée</h2>
+                        <p id="trackArtist">Choisissez un dossier de musique</p>
+                        <div class="track-meta">
+                            <span id="trackDuration">--:--</span>
+                            <span class="separator">•</span>
+                            <span id="trackFormat">---</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-section">
+                    <div class="time-info">
+                        <span id="currentTime">0:00</span>
+                        <span id="totalTime">0:00</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progressFill"></div>
+                            <input type="range" id="progressSlider" class="progress-slider" min="0" max="100" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Controls -->
+                <div class="controls">
+                    <button id="shuffleBtn" class="control-btn secondary" title="Lecture aléatoire">
+                        <span class="icon">🔀</span>
+                    </button>
+                    
+                    <button id="prevBtn" class="control-btn secondary" title="Précédent">
+                        <span class="icon">⏮️</span>
+                    </button>
+                    
+                    <button id="playBtn" class="control-btn primary" title="Lecture/Pause">
+                        <span class="play-icon">▶️</span>
+                        <span class="pause-icon" style="display: none;">⏸️</span>
+                    </button>
+                    
+                    <button id="nextBtn" class="control-btn secondary" title="Suivant">
+                        <span class="icon">⏭️</span>
+                    </button>
+                    
+                    <button id="repeatBtn" class="control-btn secondary" title="Répéter">
+                        <span class="icon">🔁</span>
+                    </button>
+                </div>
+
+                <!-- Volume Control -->
+                <div class="volume-section">
+                    <button id="muteBtn" class="volume-btn" title="Muet">
+                        <span class="icon" id="volumeIcon">🔊</span>
+                    </button>
+                    <div class="volume-container">
+                        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="70">
+                        <div class="volume-fill" id="volumeFill"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel - Playlist -->
+            <aside class="right-panel">
+                <div class="panel-header">
+                    <h3><span class="icon">🎵</span> Playlist</h3>
+                    <div class="playlist-info">
+                        <span id="playlistCount">0 pistes</span>
+                        <span class="separator">•</span>
+                        <span id="totalDuration">0:00</span>
+                    </div>
+                </div>
+                
+                <div class="playlist-controls">
+                    <button id="sortBtn" class="sort-btn" title="Trier">
+                        <span class="icon">↕️</span>
+                        <span class="text">Trier</span>
+                    </button>
+                    <button id="clearBtn" class="clear-btn" title="Vider la playlist">
+                        <span class="icon">🗑️</span>
+                        <span class="text">Vider</span>
+                    </button>
+                </div>
+
+                <div class="playlist" id="playlist">
+                    <div class="empty-playlist">
+                        <div class="empty-icon">🎵</div>
+                        <p>Aucune musique trouvée</p>
+                        <p class="empty-subtitle">Sélectionnez un dossier contenant des fichiers audio</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Status Bar -->
+        <footer class="status-bar">
+            <div class="status-left">
+                <span id="statusText">Prêt</span>
+            </div>
+            <div class="status-right">
+                <span id="folderPath">Aucun dossier</span>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
