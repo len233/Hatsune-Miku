@@ -425,7 +425,7 @@ class OceanMusicPlayer {
     this.elements.audio.src = '';
     this.elements.trackTitle.textContent = 'Aucune piste sélectionnée';
     this.elements.trackArtist.textContent = 'Importez votre musique';
-    this.elements.coverImg.src = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23001122'/><text x='150' y='160' text-anchor='middle' fill='%2300CCDD' font-size='60'>🌊</text></svg>";
+    this.elements.coverImg.src = "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 300 300'><rect width='300' height='300' fill='%23001122'/><text x='150' y='160' text-anchor='middle' fill='%2300CCDD' font-size='60'></text></svg>";
     this.elements.currentTime.textContent = '0:00';
     this.elements.duration.textContent = '0:00';
     this.elements.progress.value = 0;
