@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Ultra Modern Music Player - Interface futuriste avec technologies de pointe">
+    <meta name="theme-color" content="#0a0a0a">
+    <title>🎵 Ultra Modern Music Player</title>
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Modern fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Manifest PWA -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'><stop offset='0%' stop-color='%23ff006e'/><stop offset='100%' stop-color='%238338ec'/></linearGradient></defs><rect width='100' height='100' fill='%23000'/><circle cx='50' cy='50' r='35' fill='none' stroke='url(%23g)' stroke-width='3'/><circle cx='50' cy='50' r='8' fill='url(%23g)'/></svg>">
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-container">
+        <div class="gradient-bg"></div>
+        <div class="mesh-bg"></div>
+        <canvas id="particleCanvas" class="particle-canvas"></canvas>
+    </div>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loader-container">
+                <div class="loader-ring"></div>
+                <div class="loader-pulse"></div>
+            </div>
+            <h2 class="loading-text">Ultra Modern Player</h2>
+            <p class="loading-subtitle">Initialisation des modules avancés...</p>
+            <div class="loading-progress">
+                <div class="progress-bar" id="loadingProgress"></div>
+            </div>
+            <button id="skipLoadingBtn" class="skip-loading-btn" style="display: none;" onclick="document.getElementById('loadingScreen').classList.add('hidden')">
+                Passer le chargement
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app" class="app">
+        <!-- Top Navigation -->
+        <nav class="top-nav">
+            <div class="nav-left">
+                <div class="logo">
+                    <svg class="logo-icon" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                    </svg>
+                    <span class="logo-text">Ultra Music</span>
+                </div>
+            </div>
+            
+            <div class="nav-center">
+                <div class="search-container">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none">
+                        <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
+                        <path d="m21 21-4.35-4.35" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Rechercher dans votre bibliothèque...">
+                </div>
+            </div>
+            
+            <div class="nav-right">
+                <button class="nav-btn" id="importBtn" title="Importer de la musique">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                        <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                        <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                    <span>Import</span>
+                </button>
+                
+                <button class="nav-btn" id="visualizerBtn" title="Visualiseur Audio">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2v20M8 6v12m8-12v12M4 10v4m16-4v4" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+
+                <button class="nav-btn" id="equalizerBtn" title="Égaliseur">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <line x1="4" y1="21" x2="4" y2="14" stroke="currentColor" stroke-width="2"/>
+                        <line x1="4" y1="10" x2="4" y2="3" stroke="currentColor" stroke-width="2"/>
+                        <line x1="12" y1="21" x2="12" y2="12" stroke="currentColor" stroke-width="2"/>
+                        <line x1="12" y1="8" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                        <line x1="20" y1="21" x2="20" y2="16" stroke="currentColor" stroke-width="2"/>
+                        <line x1="20" y1="12" x2="20" y2="3" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="4" cy="12" r="2" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="12" cy="10" r="2" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="20" cy="14" r="2" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+
+                <button class="nav-btn" id="fullscreenBtn" title="Mode Immersif">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+
+                <button class="nav-btn" id="lyricsBtn" title="Paroles Synchronisées">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="2"/>
+                        <polyline points="14,2 14,8 20,8" stroke="currentColor" stroke-width="2"/>
+                        <line x1="16" y1="13" x2="8" y2="13" stroke="currentColor" stroke-width="2"/>
+                        <line x1="16" y1="17" x2="8" y2="17" stroke="currentColor" stroke-width="2"/>
+                        <polyline points="10,9 9,9 8,9" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+
+                <button class="nav-btn" id="recordBtn" title="Enregistrement Audio">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                        <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                    </svg>
+                </button>
+
+                <button class="nav-btn" id="aiBtn" title="Assistant IA Musical">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M12 2L15.09 8.26L22 9L17 14L18.18 21L12 17.77L5.82 21L7 14L2 9L8.91 8.26L12 2Z" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+
+                <button class="nav-btn" id="settingsBtn" title="Paramètres">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="2"/>
+                        <path d="M12 1v6m0 6v6m11-7h-6m-6 0H1" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content Grid -->
+        <div class="main-grid">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-section">
+                    <h3 class="section-title">Bibliothèque</h3>
+                    <nav class="sidebar-nav">
+                        <a href="#" class="nav-item active" data-view="library">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>Toute la musique</span>
+                        </a>
+                        <a href="#" class="nav-item" data-view="favorites">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>Favoris</span>
+                        </a>
+                        <a href="#" class="nav-item" data-view="recent">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                                <polyline points="12,6 12,12 16,14" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <span>Récemment joué</span>
+                        </a>
+                    </nav>
+                </div>
+
+                <div class="sidebar-section">
+                    <h3 class="section-title">Playlists</h3>
+                    <div class="playlist-list" id="playlistList">
+                        <div class="empty-state-mini">
+                            <p>Aucune playlist</p>
+                        </div>
+                    </div>
+                    <button class="create-playlist-btn" id="createPlaylistBtn">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                            <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                        <span>Créer une playlist</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <main class="content-area">
+                <!-- Library View -->
+                <div class="view-container" id="libraryView">
+                    <header class="view-header">
+                        <h1 class="view-title">Votre Bibliothèque</h1>
+                        <div class="view-controls">
+                            <button class="view-btn" id="gridViewBtn" title="Vue grille">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <rect x="3" y="3" width="7" height="7" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="14" y="3" width="7" height="7" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="14" y="14" width="7" height="7" stroke="currentColor" stroke-width="2"/>
+                                    <rect x="3" y="14" width="7" height="7" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </button>
+                            <button class="view-btn active" id="listViewBtn" title="Vue liste">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <line x1="8" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="8" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="8" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="3" y1="6" x2="3.01" y2="6" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="3" y1="12" x2="3.01" y2="12" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="3" y1="18" x2="3.01" y2="18" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                            </button>
+                            <div class="sort-dropdown">
+                                <button class="sort-btn" id="sortBtn">
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <path d="M3 6h18M7 12h10m-7 6h4" stroke="currentColor" stroke-width="2"/>
+                                    </svg>
+                                    <span>Trier</span>
+                                </button>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="tracks-container" id="tracksContainer">
+                        <div class="empty-library">
+                            <div class="empty-illustration">
+                                <svg viewBox="0 0 120 120" fill="none">
+                                    <circle cx="60" cy="60" r="50" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                                    <circle cx="60" cy="60" r="30" stroke="currentColor" stroke-width="2" opacity="0.5"/>
+                                    <circle cx="60" cy="60" r="10" fill="currentColor" opacity="0.7"/>
+                                    <path d="M30 30L90 90M90 30L30 90" stroke="currentColor" stroke-width="2" opacity="0.2"/>
+                                </svg>
+                            </div>
+                            <h3>Votre bibliothèque est vide</h3>
+                            <p>Commencez par importer votre musique préférée</p>
+                            <button class="cta-btn" onclick="document.getElementById('fileInput').click()">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" stroke="currentColor" stroke-width="2"/>
+                                    <polyline points="7,10 12,15 17,10" stroke="currentColor" stroke-width="2"/>
+                                    <line x1="12" y1="15" x2="12" y2="3" stroke="currentColor" stroke-width="2"/>
+                                </svg>
+                                Importer de la musique
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Player Panel -->
+            <section class="player-panel">
+                <!-- Now Playing Info -->
+                <div class="now-playing-info">
+                    <div class="track-artwork">
+                        <div class="artwork-container">
+                            <img id="currentArtwork" class="artwork-image" 
+                                 src="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23111'/><circle cx='50' cy='50' r='30' fill='none' stroke='%23333' stroke-width='2'/><circle cx='50' cy='50' r='8' fill='%23333'/></svg>" 
+                                 alt="Artwork">
+                            <div class="artwork-overlay">
+                                <button class="artwork-play-btn" id="artworkPlayBtn">
+                                    <svg class="play-icon" viewBox="0 0 24 24" fill="none">
+                                        <polygon points="5,3 19,12 5,21" fill="currentColor"/>
+                                    </svg>
+                                    <svg class="pause-icon" viewBox="0 0 24 24" fill="none" style="display: none;">
+                                        <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
+                                        <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="track-details">
+                        <h4 id="currentTitle" class="track-title">Sélectionnez une piste</h4>
+                        <p id="currentArtist" class="track-artist">Aucun artiste</p>
+                    </div>
+
+                    <button class="favorite-btn" id="favoriteBtn" title="Ajouter aux favoris">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Player Controls -->
+                <div class="player-controls">
+                    <div class="control-buttons">
+                        <button class="control-btn" id="shuffleBtn" title="Lecture aléatoire">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <polyline points="16,3 21,3 21,8" stroke="currentColor" stroke-width="2"/>
+                                <line x1="4" y1="20" x2="21" y2="3" stroke="currentColor" stroke-width="2"/>
+                                <polyline points="21,16 21,21 16,21" stroke="currentColor" stroke-width="2"/>
+                                <line x1="15" y1="15" x2="21" y2="21" stroke="currentColor" stroke-width="2"/>
+                                <line x1="4" y1="4" x2="9" y2="9" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+
+                        <button class="control-btn" id="prevBtn" title="Piste précédente">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <polygon points="19,20 9,12 19,4" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+                                <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+
+                        <button class="control-btn primary" id="mainPlayBtn" title="Lecture/Pause">
+                            <svg class="play-icon" viewBox="0 0 24 24" fill="none">
+                                <polygon points="5,3 19,12 5,21" fill="currentColor"/>
+                            </svg>
+                            <svg class="pause-icon" viewBox="0 0 24 24" fill="none" style="display: none;">
+                                <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
+                                <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+                            </svg>
+                        </button>
+
+                        <button class="control-btn" id="nextBtn" title="Piste suivante">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <polygon points="5,4 15,12 5,20" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+                                <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+
+                        <button class="control-btn" id="repeatBtn" title="Répéter">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <polyline points="17,1 21,5 17,9" stroke="currentColor" stroke-width="2"/>
+                                <path d="M3 11V9a4 4 0 0 1 4-4h14" stroke="currentColor" stroke-width="2"/>
+                                <polyline points="7,23 3,19 7,15" stroke="currentColor" stroke-width="2"/>
+                                <path d="M21 13v2a4 4 0 0 1-4 4H3" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="progress-section">
+                        <div class="time-display">
+                            <span id="currentTime" class="time">0:00</span>
+                            <span id="totalTime" class="time">0:00</span>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-track">
+                                <div class="progress-fill" id="progressFill"></div>
+                                <div class="progress-thumb" id="progressThumb"></div>
+                            </div>
+                            <input type="range" id="progressSlider" class="progress-slider" min="0" max="100" value="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Volume and Additional Controls -->
+                <div class="secondary-controls">
+                    <button class="control-btn" id="queueBtn" title="File d'attente">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <line x1="8" y1="6" x2="21" y2="6" stroke="currentColor" stroke-width="2"/>
+                            <line x1="8" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="2"/>
+                            <line x1="8" y1="18" x2="21" y2="18" stroke="currentColor" stroke-width="2"/>
+                            <line x1="3" y1="6" x2="3.01" y2="6" stroke="currentColor" stroke-width="2"/>
+                            <line x1="3" y1="12" x2="3.01" y2="12" stroke="currentColor" stroke-width="2"/>
+                            <line x1="3" y1="18" x2="3.01" y2="18" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </button>
+
+                    <div class="volume-control">
+                        <button class="control-btn" id="muteBtn" title="Muet">
+                            <svg class="volume-high" viewBox="0 0 24 24" fill="none">
+                                <polygon points="11,5 6,9 2,9 2,15 6,15 11,19" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            <svg class="volume-muted" viewBox="0 0 24 24" fill="none" style="display: none;">
+                                <polygon points="11,5 6,9 2,9 2,15 6,15 11,19" stroke="currentColor" stroke-width="2" fill="currentColor"/>
+                                <line x1="23" y1="9" x2="17" y2="15" stroke="currentColor" stroke-width="2"/>
+                                <line x1="17" y1="9" x2="23" y2="15" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                        </button>
+                        <div class="volume-slider-container">
+                            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="70">
+                            <div class="volume-fill" id="volumeFill"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Drop Zone Overlay -->
+    <div id="dropZone" class="drop-zone">
+        <div class="drop-content">
+            <div class="drop-icon">
+                <svg viewBox="0 0 80 80" fill="none">
+                    <circle cx="40" cy="40" r="35" stroke="currentColor" stroke-width="2" stroke-dasharray="8 4"/>
+                    <path d="M25 35L40 50L55 35" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <line x1="40" y1="20" x2="40" y2="45" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h3>Déposez vos fichiers musicaux ici</h3>
+            <p>Formats supportés: MP3, WAV, FLAC, M4A, OGG</p>
+        </div>
+    </div>
+
+    <!-- Audio Visualizer Modal -->
+    <div id="visualizerModal" class="modal visualizer-modal">
+        <div class="modal-content visualizer-content">
+            <div class="modal-header">
+                <h2>Visualiseur Audio 3D</h2>
+                <button class="modal-close" id="closeVisualizerBtn">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="visualizer-container">
+                <canvas id="visualizerCanvas" class="visualizer-canvas"></canvas>
+                <div class="visualizer-controls">
+                    <select id="visualizerMode" class="visualizer-select">
+                        <option value="bars">Barres 3D</option>
+                        <option value="circle">Cercle</option>
+                        <option value="wave">Ondes</option>
+                        <option value="spiral">Spirale</option>
+                        <option value="particles">Particules</option>
+                    </select>
+                    <div class="visualizer-settings">
+                        <label>Sensibilité: <input type="range" id="visualizerSensitivity" min="1" max="10" value="5"></label>
+                        <label>Couleur: <input type="color" id="visualizerColor" value="#8b5cf6"></label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Equalizer Modal -->
+    <div id="equalizerModal" class="modal equalizer-modal">
+        <div class="modal-content equalizer-content">
+            <div class="modal-header">
+                <h2>Égaliseur Graphique</h2>
+                <button class="modal-close" id="closeEqualizerBtn">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="equalizer-container">
+                <div class="eq-presets">
+                    <button class="eq-preset active" data-preset="flat">Flat</button>
+                    <button class="eq-preset" data-preset="rock">Rock</button>
+                    <button class="eq-preset" data-preset="pop">Pop</button>
+                    <button class="eq-preset" data-preset="jazz">Jazz</button>
+                    <button class="eq-preset" data-preset="classical">Classical</button>
+                    <button class="eq-preset" data-preset="electronic">Electronic</button>
+                </div>
+                <div class="eq-bands">
+                    <div class="eq-band" data-frequency="60">
+                        <input type="range" class="eq-slider" min="-12" max="12" value="0" step="0.5">
+                        <label>60Hz</label>
+                    </div>
+                    <div class="eq-band" data-frequency="170">
+                        <input type="range" class="eq-slider" min="-12" max="12" value="0" step="0.5">
+                        <label>170Hz</label>
+                    </div>
+                    <div class="eq-band" data-frequency="310">
+                        <input type="range" class="eq-slider" min="-12" max="12" value="0" step="0.5">
+                        <label>310Hz</label>
+                    </div>
+                    <div class="eq-band" data-frequency="600">
+                        <input type="range" class="eq-slider" min="-12" max="12" value="0" step="0.5">
+                        <label>600Hz</label>
+                    </div>
+                    <div class="eq-band" data-frequency="1000">
+                        <input type="range" class="eq-slider" min="-12" max="12" value="0" step="0.5">
+                        <label>1kHz</label>
+                    </div>
+                    <div class="eq-band" data-frequency="3000">
+                        <input type="range" class="eq-slider" min="-12" max="12" value="0" step="0.5">
+                        <label>3kHz</label>
+                    </div>
+                    <div class="eq-band" data-frequency="6000">
+                        <input type="range" class="eq-slider" min="-12" max="12" value="0" step="0.5">
+                        <label>6kHz</label>
+                    </div>
+                    <div class="eq-band" data-frequency="12000">
+                        <input type="range" class="eq-slider" min="-12" max="12" value="0" step="0.5">
+                        <label>12kHz</label>
+                    </div>
+                    <div class="eq-band" data-frequency="14000">
+                        <input type="range" class="eq-slider" min="-12" max="12" value="0" step="0.5">
+                        <label>14kHz</label>
+                    </div>
+                    <div class="eq-band" data-frequency="16000">
+                        <input type="range" class="eq-slider" min="-12" max="12" value="0" step="0.5">
+                        <label>16kHz</label>
+                    </div>
+                </div>
+                <div class="eq-effects">
+                    <div class="effect-control">
+                        <label>Reverb</label>
+                        <input type="range" id="reverbAmount" min="0" max="100" value="0">
+                    </div>
+                    <div class="effect-control">
+                        <label>Bass Boost</label>
+                        <input type="range" id="bassBoost" min="0" max="100" value="0">
+                    </div>
+                    <div class="effect-control">
+                        <label>3D Spatial</label>
+                        <input type="range" id="spatialAudio" min="0" max="100" value="0">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Immersive Mode -->
+    <div id="immersiveMode" class="immersive-mode">
+        <div class="immersive-bg">
+            <canvas id="immersiveCanvas" class="immersive-canvas"></canvas>
+        </div>
+        <div class="immersive-content">
+            <div class="immersive-artwork">
+                <img id="immersiveArtwork" src="" alt="Artwork">
+            </div>
+            <div class="immersive-info">
+                <h1 id="immersiveTitle" class="immersive-track-title">Track Title</h1>
+                <p id="immersiveArtist" class="immersive-track-artist">Artist Name</p>
+            </div>
+            <div class="immersive-controls">
+                <button class="immersive-btn" id="immersivePrev">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <polygon points="19,20 9,12 19,4" fill="currentColor"/>
+                        <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+                <button class="immersive-btn immersive-play" id="immersivePlay">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="none">
+                        <polygon points="5,3 19,12 5,21" fill="currentColor"/>
+                    </svg>
+                    <svg class="pause-icon" viewBox="0 0 24 24" fill="none" style="display: none;">
+                        <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
+                        <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+                    </svg>
+                </button>
+                <button class="immersive-btn" id="immersiveNext">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <polygon points="5,4 15,12 5,20" fill="currentColor"/>
+                        <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+            <button class="exit-immersive" id="exitImmersiveBtn">
+                <svg viewBox="0 0 24 24" fill="none">
+                    <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                    <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Lyrics Modal -->
+    <div id="lyricsModal" class="modal lyrics-modal">
+        <div class="modal-content lyrics-content">
+            <div class="modal-header">
+                <h2>Paroles Synchronisées</h2>
+                <div class="lyrics-controls">
+                    <button class="lyrics-btn" id="autoScrollBtn" title="Défilement Automatique">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M7 13l3 3 7-7" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </button>
+                    <button class="lyrics-btn" id="editLyricsBtn" title="Modifier les Paroles">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" stroke="currentColor" stroke-width="2"/>
+                            <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </button>
+                </div>
+                <button class="modal-close" id="closeLyricsBtn">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="lyrics-container">
+                <div class="lyrics-display" id="lyricsDisplay">
+                    <div class="no-lyrics">
+                        <div class="no-lyrics-icon">
+                            <svg viewBox="0 0 120 120" fill="none">
+                                <circle cx="60" cy="60" r="50" stroke="currentColor" stroke-width="2" opacity="0.3"/>
+                                <path d="M40 45h40M40 60h30M40 75h35" stroke="currentColor" stroke-width="2" opacity="0.5"/>
+                            </svg>
+                        </div>
+                        <h3>Aucune parole disponible</h3>
+                        <p>Les paroles seront recherchées automatiquement ou vous pouvez les ajouter manuellement</p>
+                        <button class="add-lyrics-btn" id="addLyricsBtn">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                                <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                            </svg>
+                            Ajouter des paroles
+                        </button>
+                    </div>
+                </div>
+                <div class="lyrics-editor" id="lyricsEditor" style="display: none;">
+                    <textarea id="lyricsInput" placeholder="Saisissez les paroles ici...&#10;Utilisez [mm:ss] pour synchroniser les temps&#10;Exemple:&#10;[00:15] Première ligne&#10;[00:30] Deuxième ligne"></textarea>
+                    <div class="editor-actions">
+                        <button class="btn-primary" id="saveLyricsBtn">Sauvegarder</button>
+                        <button class="btn-secondary" id="cancelEditBtn">Annuler</button>
+                        <button class="btn-secondary" id="searchLyricsBtn">Rechercher en ligne</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recording Modal -->
+    <div id="recordModal" class="modal record-modal">
+        <div class="modal-content record-content">
+            <div class="modal-header">
+                <h2>Enregistrement Audio</h2>
+                <button class="modal-close" id="closeRecordBtn">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="record-container">
+                <div class="record-visualizer">
+                    <canvas id="recordCanvas" class="record-canvas"></canvas>
+                </div>
+                <div class="record-info">
+                    <div class="record-status" id="recordStatus">Prêt à enregistrer</div>
+                    <div class="record-time" id="recordTime">00:00</div>
+                </div>
+                <div class="record-controls">
+                    <button class="record-btn" id="startRecordBtn" title="Commencer l'enregistrement">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+                            <circle cx="12" cy="12" r="3" fill="currentColor"/>
+                        </svg>
+                    </button>
+                    <button class="record-btn" id="stopRecordBtn" title="Arrêter l'enregistrement" disabled>
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <rect x="6" y="6" width="12" height="12" fill="currentColor"/>
+                        </svg>
+                    </button>
+                    <button class="record-btn" id="playRecordBtn" title="Écouter l'enregistrement" disabled>
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <polygon points="5,3 19,12 5,21" fill="currentColor"/>
+                        </svg>
+                    </button>
+                    <button class="record-btn" id="saveRecordBtn" title="Sauvegarder" disabled>
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="17,21 17,13 7,13 7,21" stroke="currentColor" stroke-width="2"/>
+                            <polyline points="7,3 7,8 15,8" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="record-settings">
+                    <div class="setting-group">
+                        <label>Format:</label>
+                        <select id="recordFormat">
+                            <option value="mp3">MP3</option>
+                            <option value="wav">WAV</option>
+                            <option value="ogg">OGG</option>
+                        </select>
+                    </div>
+                    <div class="setting-group">
+                        <label>Qualité:</label>
+                        <select id="recordQuality">
+                            <option value="high">Haute (320kbps)</option>
+                            <option value="medium">Moyenne (192kbps)</option>
+                            <option value="low">Basse (128kbps)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant Modal -->
+    <div id="aiModal" class="modal ai-modal">
+        <div class="modal-content ai-content">
+            <div class="modal-header">
+                <h2>Assistant IA Musical</h2>
+                <button class="modal-close" id="closeAiBtn">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2"/>
+                        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="ai-container">
+                <div class="ai-chat" id="aiChat">
+                    <div class="ai-message ai-message-assistant">
+                        <div class="ai-avatar">🤖</div>
+                        <div class="ai-text">
+                            Salut ! Je suis votre assistant IA musical. Je peux vous aider avec :
+                            <ul>
+                                <li>🎵 Recommandations musicales personnalisées</li>
+                                <li>📊 Analyse de vos habitudes d'écoute</li>
+                                <li>🎼 Création de playlists intelligentes</li>
+                                <li>🎤 Suggestions d'artistes similaires</li>
+                                <li>📈 Statistiques avancées</li>
+                            </ul>
+                            Que puis-je faire pour vous ?
+                        </div>
+                    </div>
+                </div>
+                <div class="ai-input-container">
+                    <input type="text" id="aiInput" placeholder="Demandez-moi quelque chose sur votre musique..." />
+                    <button class="ai-send-btn" id="aiSendBtn">
+                        <svg viewBox="0 0 24 24" fill="none">
+                            <line x1="22" y1="2" x2="11" y2="13" stroke="currentColor" stroke-width="2"/>
+                            <polygon points="22,2 15,22 11,13 2,9 22,2" stroke="currentColor" stroke-width="2"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="ai-suggestions">
+                    <button class="ai-suggestion-btn" data-suggestion="Recommande-moi de la musique similaire">🎵 Musique similaire</button>
+                    <button class="ai-suggestion-btn" data-suggestion="Crée une playlist pour travailler">📚 Playlist travail</button>
+                    <button class="ai-suggestion-btn" data-suggestion="Analyse mes goûts musicaux">📊 Analyse mes goûts</button>
+                    <button class="ai-suggestion-btn" data-suggestion="Génère une playlist détente">😌 Playlist détente</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Input -->
+    <input type="file" id="fileInput" accept="audio/*" multiple style="display: none;">
+
+    <!-- Audio Element -->
+    <audio id="audioElement" preload="metadata"></audio>
+
+    <!-- Notification Container -->
+    <div id="notificationContainer" class="notification-container"></div>
+
+    <!-- Scripts -->
+    <script type="module" src="script.js"></script>
+</body>
+</html>
